@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
 import "./globals.css";
 
@@ -22,6 +23,11 @@ export default function RootLayout({
       <body>
         <SiteHeader />
         {children}
+        <footer className="border-t border-border px-4 py-5 text-sm text-muted">
+          <div className="mx-auto max-w-[1120px] sm:px-2">
+            <Link href="/privacy" className="underline underline-offset-4 hover:text-accent">ความเป็นส่วนตัว</Link>
+          </div>
+        </footer>
       </body>
     </html>
   );

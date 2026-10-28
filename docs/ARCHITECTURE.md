@@ -41,13 +41,14 @@ docs/                        # requirements, architecture, design, deployment
 ```
 
 เส้นทาง `/moves/[slug]` และ `/favorites` เป็นแผนตาม PRD ยังไม่สร้างไฟล์ route ว่าง
+เส้นทาง `/privacy` แสดงฉบับร่างสำหรับการพัฒนาและเชื่อมจาก footer; ต้องเติมข้อมูลผู้ดูแลและตรวจบริการก่อนเปิดสาธารณะ
 ไม่เพิ่ม backend/API, state library, ORM, CMS หรือ UI kit จนกว่าจะมีเหตุผลที่ขอบเขตต้องใช้
 
 ## Data flow ที่กำหนดสำหรับ V1
 
-1. เนื้อหาที่ตรวจแล้วอยู่ใน repository เป็น typed objects
-2. Server Components อ่านเนื้อหาตอน build; หน้ารายละเอียดใช้ static params จาก verified slugs
-3. ส่วน interactive ค้นหา/กรอง/สลับจอยเป็น Client Component รับข้อมูลที่ serialize ได้
+1. คู่มือและคำแนะนำ practice ที่อิง EA Help อยู่ใน repository เป็น typed entries พร้อม source links
+2. Server Components ส่ง typed entries ไปยัง Client Component ที่มีเฉพาะส่วน filter, search และ favorites
+3. แสดงปุ่มแยกตาม platform จาก FIFPlay สำหรับท่ายิง ส่ง และท่าดีใจบางรายการ; รายการอื่นให้ดูปุ่มในเกม
 4. preferences ใช้ client hook และ localStorage แบบ versioned key `fc26-playbook:preferences:v1`
 5. อ่าน localStorage หลัง hydration เท่านั้น ตรวจค่าที่อ่านและจับ storage exceptions
    state ใน memory ต้องยังทำงานได้เมื่อ storage ใช้ไม่ได้
@@ -61,8 +62,8 @@ docs/                        # requirements, architecture, design, deployment
 เงื่อนไข, แหล่งข้อมูล และสถานะ/วันที่ตรวจสอบ ปุ่มข้ามจอยเก็บชัดเจน ไม่แปลงด้วย string replace
 อนาล็อกต้องระบุทิศอ้างอิงก่อนเผยแพร่ ส่วนกดพร้อมกันและกดตามลำดับเป็นคนละ input step
 
-catalog ที่ public ใช้เฉพาะ `verified` items; draft ไม่ส่งไป client และไม่สร้าง detail routes
-ตอน bootstrap ใช้ empty list โดยตั้งใจ ไม่มีคำสั่งที่ยกมาจาก mockup
+catalog ระบุท่าที่มีชื่อ/แนวทางจาก EA Help และปุ่ม Classic จาก FIFPlay ตรวจเทียบแหล่งข้อมูลวันที่ 2026-10-28
+ปุ่มยังไม่ได้ตรวจเทียบในเกม และไม่ได้นำคำสั่งจาก mockup มาแสดง
 
 ## Rendering / deployment
 

@@ -1,4 +1,4 @@
-const categories = ["การยิง", "การส่ง", "ท่าดีใจ"];
+import { MoveExplorer } from "@/features/moves/move-explorer";
 
 export default function HomePage() {
   return (
@@ -10,28 +10,10 @@ export default function HomePage() {
         ทุกท่า อยู่ที่ปลายนิ้ว
       </h1>
       <p className="mt-3 max-w-xl text-sm leading-7 text-muted">
-        คู่มือปุ่มกดสำหรับ PlayStation และ Xbox กำลังเตรียมข้อมูลที่ผ่านการตรวจสอบในเกม
+        เลือกหมวด ค้นหาท่า สลับจอย แล้วเปิดดูวิธีทำได้เลย
       </p>
 
-      <section aria-labelledby="categories-title" className="mt-12">
-        <h2 id="categories-title" className="text-lg font-semibold">
-          หมวดคู่มือ
-        </h2>
-        <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-          {categories.map((category) => (
-            <li
-              key={category}
-              className="rounded-lg border border-border bg-surface px-5 py-5 text-sm font-medium"
-            >
-              {category}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <p className="mt-8 rounded-lg border border-border bg-surface px-5 py-4 text-sm text-muted">
-        รายการท่าจะแสดงที่นี่หลังตรวจสอบชุดควบคุม Classic ใน FC 26 แล้ว
-      </p>
+      <MoveExplorer />
     </main>
   );
 }

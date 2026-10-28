@@ -2,8 +2,9 @@
 
 คู่มือปุ่ม EA SPORTS FC 26 ภาษาไทย สำหรับ PlayStation และ Xbox ธีม Midnight Arena
 
-ตอนนี้เป็นโครงเริ่มต้นสำหรับพัฒนาต่อ ยังไม่มีคลังคำสั่งจริง ฟีเจอร์ค้นหา หรือรายการโปรด
-ไม่มีฐานข้อมูล ระบบสมาชิก และ environment variables ที่ต้องตั้งค่า
+หน้าแรกมีตัวกรองหมวด การค้นหา สลับจอย รายการโปรด และคำแนะนำท่าจาก EA Help
+ปุ่มยิง ส่ง และท่าดีใจบางรายการอิง FIFPlay (ตรวจเทียบแหล่งข้อมูล 2026-10-28)
+ยังไม่ได้ตรวจเทียบในเกม คู่มือนี้ยังไม่มีฐานข้อมูลหรือระบบสมาชิก
 
 ## ใช้งานในเครื่อง
 
@@ -32,8 +33,8 @@ npm run start
 src/app/                  routes, layout, global theme
 src/components/layout/    shared header / app shell
 src/components/ui/        UI primitives เมื่อเริ่มใช้
-src/features/moves/       domain types, categories, verified content
-src/features/preferences/ controller และ browser-local favorites (แผน V1)
+src/features/moves/       categories, guide content, controller-aware explorer
+src/features/preferences/ local favorites (browser storage contract)
 public/                   static assets
 docs/                     product และ engineering contracts
 ```
@@ -47,9 +48,9 @@ docs/                     product และ engineering contracts
 
 ## ขั้นพัฒนาถัดไป
 
-1. เพิ่มข้อมูลที่ตรวจแล้ว พร้อม sources/วันที่ตรวจ ตาม content contract
-2. ทำรายการท่า ค้นหา กรองหมวด และสลับจอย
-3. ทำหน้ารายละเอียดและ favorites พร้อมตรวจ behavior ตาม PRD
-4. เชื่อม Git/Vercel และตรวจ Preview หลังได้รับอนุญาตให้เผยแพร่
+1. ตรวจปุ่มที่เพิ่มแล้วใน FC 26 Classic ทั้ง PlayStation/Xbox
+2. เพิ่ม mapping สำหรับรายการที่เหลือพร้อมแหล่งข้อมูล/วันที่ตรวจสอบ
+3. เพิ่มหน้ารายละเอียดแบบ shareable ตาม content contract
+4. เชื่อม Git/Vercel และตรวจ Preview หลังเลือกปลายทางและอนุญาตให้เผยแพร่
 
 สร้าง local Git repository ไว้แล้ว; ยังไม่ตั้ง remote, ไม่สร้าง cloud project และไม่ deploy
