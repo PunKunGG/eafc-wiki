@@ -9,6 +9,7 @@ export function getServerPreferences(): Preferences {
 }
 const listeners = new Set<() => void>();
 let snapshot: Preferences | undefined;
+let hasUnsavedChanges = false;
 
 function isPlatform(value: unknown): value is ControllerPlatform {
   return value === "playstation" || value === "xbox";
@@ -30,10 +31,11 @@ function readPreferences(): Preferences {
         favorites: [...new Set(favorites)],
       };
     }
+    return DEFAULT_PREFERENCES;
   } catch {
     // Keep the guide usable when browser storage is disabled or corrupted.
   }
-  return DEFAULT_PREFERENCES;
+  return snapshot ?? DEFAULT_PREFERENCES;
 }
 
 export function getPreferences(): Preferences {
@@ -42,11 +44,22 @@ export function getPreferences(): Preferences {
 }
 
 export function subscribePreferences(listener: () => void): () => void {
+  if (listeners.size === 0) {
+    window.addEventListener("storage", handleStorageChange);
+    if (!hasUnsavedChanges) {
+      const current = getPreferences();
+      const stored = readPreferences();
+      if (current.platform !== stored.platform ||
+          current.favorites.length !== stored.favorites.length ||
+          current.favorites.some((value, index) => value !== stored.favorites[index])) {
+        snapshot = stored;
+      }
+    }
+  }
   listeners.add(listener);
-  window.addEventListener("storage", handleStorageChange);
   return () => {
     listeners.delete(listener);
-    window.removeEventListener("storage", handleStorageChange);
+    if (listeners.size === 0) window.removeEventListener("storage", handleStorageChange);
   };
 }
 
@@ -56,6 +69,7 @@ function notify(): void {
 
 function handleStorageChange(event: StorageEvent): void {
   if (event.key !== null && event.key !== STORAGE_KEY) return;
+  if (hasUnsavedChanges) return;
   snapshot = readPreferences();
   notify();
 }
@@ -68,7 +82,9 @@ export function updatePreferences(update: Partial<Preferences>): void {
   };
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+    hasUnsavedChanges = false;
   } catch {
+    hasUnsavedChanges = true;
     // Continue with in-memory preferences for this visit.
   }
   notify();
