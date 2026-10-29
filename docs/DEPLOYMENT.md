@@ -48,6 +48,10 @@ Vercel Git integration build/deploy ให้เอง จึงยังไม�
 
 ## ขอบเขตการยืนยัน
 
+- ก่อนเปิดสาธารณะ ต้องระบุผู้ดูแลและตรวจผู้ให้บริการโฮสติ้ง, logs, ระยะเวลาเก็บ และ analytics ใน Privacy Notice
+- สิทธิการใช้ข้อมูล FIFPlay และ EA ยังไม่ได้รับการยืนยัน: ตรวจเงื่อนไขหรือขออนุญาตก่อนเผยแพร่; การใส่ลิงก์อ้างอิงเพียงอย่างเดียวไม่ยืนยันสิทธิ
+- `npm audit --omit=dev --audit-level=low` วันที่ 2026-10-29 พบ 0 ช่องโหว่ใน production dependencies; ควรตรวจซ้ำก่อนปล่อย และตรวจสถานะ Next.js advisory GHSA-39w2-rjm5-chcv ซึ่งยังระบุรุ่นที่แก้ไม่ชัดเจน
+
 - local build สำเร็จ = ตรวจความพร้อมของ source ในเครื่อง
 - Vercel READY + URL จริง + browser checks = หลักฐานของ deployment
 - ยังไม่เรียก local build ว่า deploy สำเร็จ

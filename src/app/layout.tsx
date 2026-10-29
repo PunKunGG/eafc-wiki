@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
+import { SiteFooter } from "@/components/layout/site-footer";
+import { LanguageProvider } from "@/features/preferences/language-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "FC26 Playbook — คู่มือปุ่มกดภาษาไทย",
+  title: "FC26 Playbook — EA SPORTS FC 26 Guide",
   description:
     "คู่มือปุ่ม EA SPORTS FC 26 ภาษาไทย สำหรับ PlayStation และ Xbox",
   applicationName: "FC26 Playbook",
@@ -21,13 +22,11 @@ export default function RootLayout({
   return (
     <html lang="th">
       <body>
-        <SiteHeader />
-        {children}
-        <footer className="border-t border-border px-4 py-5 text-sm text-muted">
-          <div className="mx-auto max-w-[1120px] sm:px-2">
-            <Link href="/privacy" className="underline underline-offset-4 hover:text-accent">ความเป็นส่วนตัว</Link>
-          </div>
-        </footer>
+        <LanguageProvider>
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </LanguageProvider>
       </body>
     </html>
   );

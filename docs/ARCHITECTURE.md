@@ -40,16 +40,16 @@ public/                      # static assets ที่โฮสต์เอง
 docs/                        # requirements, architecture, design, deployment
 ```
 
-เส้นทาง `/moves/[slug]` และ `/favorites` เป็นแผนตาม PRD ยังไม่สร้างไฟล์ route ว่าง
+เส้นทาง `/moves/[slug]` แสดงรายละเอียดท่าจาก catalog; `/favorites` ยังเป็นแผนตาม PRD
 เส้นทาง `/privacy` แสดงฉบับร่างสำหรับการพัฒนาและเชื่อมจาก footer; ต้องเติมข้อมูลผู้ดูแลและตรวจบริการก่อนเปิดสาธารณะ
 ไม่เพิ่ม backend/API, state library, ORM, CMS หรือ UI kit จนกว่าจะมีเหตุผลที่ขอบเขตต้องใช้
 
 ## Data flow ที่กำหนดสำหรับ V1
 
 1. คู่มือและคำแนะนำ practice ที่อิง EA Help อยู่ใน repository เป็น typed entries พร้อม source links
-2. Server Components ส่ง typed entries ไปยัง Client Component ที่มีเฉพาะส่วน filter, search และ favorites
+2. catalog และ control-data เก็บข้อความกับขั้นตอนแบบมีโครงสร้าง; หน้าคลังและรายละเอียดใช้ ControlSequence เดียวกัน
 3. แสดงปุ่มแยกตาม platform จาก FIFPlay สำหรับท่ายิง ส่ง และท่าดีใจบางรายการ; รายการอื่นให้ดูปุ่มในเกม
-4. preferences ใช้ client hook และ localStorage แบบ versioned key `fc26-playbook:preferences:v1`
+4. preferences ภาษา จอย และรายการโปรดใช้ client hook และ localStorage แบบ versioned key `fc26-playbook:preferences:v1`
 5. อ่าน localStorage หลัง hydration เท่านั้น ตรวจค่าที่อ่านและจับ storage exceptions
    state ใน memory ต้องยังทำงานได้เมื่อ storage ใช้ไม่ได้
 
