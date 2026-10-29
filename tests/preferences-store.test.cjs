@@ -20,7 +20,7 @@ function createStore() {
   const source = fs.readFileSync("src/features/preferences/client-store.ts", "utf8");
   const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const exports = {};
-  vm.runInNewContext(compiled, { exports, localStorage, window, Set, JSON, require: () => ({ moveGuides: [{ slug: "ground-pass" }] }) });
+  vm.runInNewContext(compiled, { exports, localStorage, window, Set, Map, JSON, require: () => ({ moveGuides: [{ slug: "ground-pass" }, { slug: "regular-shot" }] }) });
   return { store: exports, values, handlers, setUnavailable(value) { unavailable = value; } };
 }
 
@@ -33,7 +33,7 @@ test("refreshes preferences after resubscribing and preserves the other tab's fa
   store.subscribePreferences(() => {});
   assert.equal(store.getPreferences().favorites[0], "ground-pass");
   store.updatePreferences({ platform: "xbox" });
-  assert.deepEqual(JSON.parse(values.get(key)), { platform: "xbox", favorites: ["ground-pass"] });
+  assert.deepEqual(JSON.parse(values.get(key)), { platform: "xbox", language: "th", favorites: ["ground-pass"] });
 });
 
 test("retains unsaved preferences when storage is unavailable and resubscribes", () => {
@@ -55,4 +55,59 @@ test("refreshes defaults after another tab clears preferences", () => {
   values.clear();
   store.subscribePreferences(() => {});
   assert.equal(store.getPreferences().platform, "playstation");
+});
+
+test("updates language without losing favorites and reads language changed in another tab", () => {
+  const { store, values } = createStore();
+  const key = "fc26-playbook:preferences:v1";
+  const unsubscribe = store.subscribePreferences(() => {});
+  store.updatePreferences({ favorites: ["ground-pass"] });
+  store.updatePreferences({ language: "en" });
+  assert.equal(JSON.parse(values.get(key)).favorites[0], "ground-pass");
+  unsubscribe();
+  values.set(key, JSON.stringify({ platform: "xbox", language: "th", favorites: ["ground-pass"] }));
+  store.subscribePreferences(() => {});
+  assert.equal(store.getPreferences().language, "th");
+  assert.equal(store.getPreferences().platform, "xbox");
+  assert.equal(store.getPreferences().favorites[0], "ground-pass");
+});
+
+test("merges another tab's favorites after a failed write before storage recovers", () => {
+  const { store, values, handlers, setUnavailable } = createStore();
+  const key = "fc26-playbook:preferences:v1";
+  store.subscribePreferences(() => {});
+  setUnavailable(true);
+  store.updatePreferences({ language: "en" });
+  values.set(key, JSON.stringify({ platform: "playstation", language: "th", favorites: ["ground-pass"] }));
+  setUnavailable(false);
+  for (const handler of handlers) handler({ key });
+  store.updatePreferences({ platform: "xbox" });
+  assert.deepEqual(JSON.parse(values.get(key)), { platform: "xbox", language: "en", favorites: ["ground-pass"] });
+});
+
+test("merges distinct favorite additions after a failed write", () => {
+  const { store, values, handlers, setUnavailable } = createStore();
+  const key = "fc26-playbook:preferences:v1";
+  store.subscribePreferences(() => {});
+  setUnavailable(true);
+  store.updatePreferences({ favorites: ["ground-pass"] });
+  values.set(key, JSON.stringify({ platform: "playstation", language: "th", favorites: ["regular-shot"] }));
+  setUnavailable(false);
+  for (const handler of handlers) handler({ key });
+  store.updatePreferences({ platform: "xbox" });
+  assert.deepEqual(JSON.parse(values.get(key)).favorites, ["regular-shot", "ground-pass"]);
+});
+
+test("preserves a pending removal while another tab adds a favorite", () => {
+  const { store, values, handlers, setUnavailable } = createStore();
+  const key = "fc26-playbook:preferences:v1";
+  values.set(key, JSON.stringify({ platform: "playstation", language: "th", favorites: ["ground-pass"] }));
+  store.subscribePreferences(() => {});
+  setUnavailable(true);
+  store.updatePreferences({ favorites: [] });
+  values.set(key, JSON.stringify({ platform: "playstation", language: "th", favorites: ["ground-pass", "regular-shot"] }));
+  setUnavailable(false);
+  for (const handler of handlers) handler({ key });
+  store.updatePreferences({ platform: "xbox" });
+  assert.deepEqual(JSON.parse(values.get(key)).favorites, ["regular-shot"]);
 });
